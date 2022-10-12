@@ -3,6 +3,8 @@ import { Form, Button } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 import { AddNewUser } from "../action/UserAction";
 import { useDispatch, connect } from "react-redux";
+import {setDoc, doc} from 'firebase/firestore'; 
+import {db} from '../firebase/config'
 
 function AddUserContact(props) {
 	const [name, setName] = useState("");
@@ -10,14 +12,14 @@ function AddUserContact(props) {
 	const [location, setLocation] = useState("");
 	const dispatch = useDispatch();
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async(e) => {
 		e.preventDefault();
 		// if (name === "" || gen === "" || email === "") {
 		// 	alert("Please fill all the fields");
 		// }
 
 		let userBio = { name, number, location, id: uuidv4() };
-		dispatch(AddNewUser(userBio));
+		try{await setDoc(doc(db,'user',userBio.id),userBio)}catch(e){}
 		setName("");
 		setNumber("");
 		setLocation("");
